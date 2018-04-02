@@ -1,0 +1,41 @@
+包【package import】
+  java中的包也就是系统中的文件夹，用于区分同名文件，包也是一种封装形式
+  对类文件进行分类管理
+  给类提供多层命名空间
+
+  写在程序的第一行
+  包名的全称  包名.类名
+
+  当不同包目录下的类文件需要相互访问，必须要保证包的访问权限足够大(public)，被访问的成员也要权限足够大
+
+  当导入的包中出现同名类时，建立对象时必须加包名.类名
+
+  建立定义包名是不能重复的，可以使用url来完成
+    即域名的倒写
+
+------------------------------------------
+jar包
+  java的压缩包
+  在制定目录输入 jar -cf _jar名称_.jar 添加的文件夹
+
+  javac的主程序是一个Main.class类
+------------------------------------------------
+静态导入：导入的都是静态方法
+  import static
+  当类名重名时，需要指定具体的包名
+  当方法重名是，指定具备所属的对象或者类
+
+  输出语句简化
+  import static java.lang.System.*;
+
+---------------------------------------------
+java.lang : java的核心包 jdk1.2版本以后，该包中的类自动导入。
+java.awt: 用于制作图形界面。
+java.io:input output  用于操作设备上的数据。
+java.util : 这里定义是java的工具类。集合，日期。
+java.net:用于网络通讯的。
+java.applet:  application  let        server  let    servlet      java server page   jsp
+
+class haha implements Servlet
+
+class hehe extends HttpServlet

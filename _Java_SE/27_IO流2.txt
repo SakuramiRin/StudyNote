@@ -1,0 +1,363 @@
+File 类
+  用来将文件或文件夹封装成对象
+  方便对文件与文件夹进行操作
+  File对象可以作为参数传递给流的构造函数
+
+  流只能操作文件的数据，想要操作文件的文件信息需要使用File类对象
+
+  File f = new File("路径","文件"); 路径中，File.separator 表示一个与平台无关的路径分割符
+
+  File类常见方法：
+  1，创建
+  	boolean createNewFile():在指定位置创建文件，如果该文件已经存在，则不创建，返回false,和输出流不一样，输出流对象一建立创建文件。而且文件已经存在，会覆盖
+
+  	boolean mkdir():创建文件夹
+  	boolean mkdirs():创建多级文件夹
+  2，删除
+  	boolean delete()：删除失败返回false。如果文件正在被使用，则删除不了返回falsel
+  	void deleteOnExit();在程序退出时删除指定文件
+
+
+  3，判断。
+  	boolean exists() :文件是否存在.
+  	isFile():
+  	isDirectory();
+  	isHidden(); 是否隐藏
+  	isAbsolute();
+
+    记住在判断文件对象是否是文件或者目的时，必须要先判断该文件对象封装的内容是否存在通过exists判断
+
+  4，获取信息。
+  	getName():
+  	getPath():
+  	getParent():该方法返回的是绝对路径中的父目录。如果获取的是相对路径，返回null
+    如果相对路径中有上一层目录那么该目录就是返回结果
+
+  	getAbsolutePath()
+  	long lastModified()  返回文件最后一次被修改的时间
+  	long length()
+
+
+---------------------------------------------
+    ListRoots();
+      File[] files = File.ListRoots();
+      for(File f: files){}  列出机器中的有效盘符
+    list()
+      File f = new File("C:\\");  参数不能为空，不然会发生空指针异常
+      String[] names = f.list();
+      for(String name:names){} 列出当前目录所有的文件和文件夹
+    FilenameFilter()
+      File dir = new File("指定目录")
+      String[] arr = dir.list(new FilenameFilter(){
+        return name.endsWith(".txt")
+      });
+      for(String name:arr){}  过滤不含.txt的文件
+
+
+      列出指定目录下的的所有文件包括子文件
+      File dir = new File("目录");
+      showDir(dir);
+      public static void showDir(File dir){
+        File[] files = dir.ListFiles();
+        for(int x = 0;x<files.length;x++){
+        if(files[x].isDirectory())
+          showDir(files[x]);  递归
+        else
+          syso.(files[x]);
+        }
+      }
+
+
+      删除一个带内容的目录
+      Windows删除原理是从里往外
+      File dir = new File("目录");
+      removeDir(dir);
+      public static void removeDir(File dir){
+        File[] files = dir.listFiles();
+        for(int x = 0; x<files.length; x++){
+          if(files[x].isDirectory())    //!files[x]isHidden()&&files[x].isDirectory() 非隐藏目录
+            removeDir(files[x]);
+          else
+            syso.(files[x].delete());
+        }
+        syso.(dir.delete())
+      }
+
+
+      ------------------
+      创建java文件列表
+        File dir = new File("目录");
+        List<File> list = new ArrayList<File>();  创建List集合
+        fileToList(dir,list);
+        //System.out.println(list.size()); 控制台
+        File file = new File(dir,"javalist.txt");
+        writeToFile(list,file.toString());
+
+      public static void fileToList(File dir,List<File> list)  {
+        File[] files = dir.listFiles();
+        for(File file : files){
+          if(file.isDirectory())
+            fileToList(file,list);
+          else{
+            if(file.getName().endsWith(".java"))
+              list.add(file);
+          }
+        }
+      }
+
+      public static void writeToFile(List<File> list,String javaListFile)throws IOException{
+        BufferedWriter bufw =  null;
+        try{
+          bufw = new BufferedWriter(new FileWriter(javaListFile));
+
+          for(File f : list){
+            String path = f.getAbsolutePath();
+            bufw.write(path);
+            bufw.newLine();
+            bufw.flush();
+          }
+
+        }
+        catch (IOException e)
+        finally
+        {
+          try{
+            if(bufw!=null)
+              bufw.close();
+          }
+          catch (IOException e)
+        }
+      }
+      }
+
+
+
+----------------------------------------------
+IO包中其他类
+  打印流：该流提供了打印方法，可以将各种数据都原样打印
+    字符打印流 web开发非常常用！！！
+      PrintWriter
+      构造时可以接受的参数类型
+        file对象  new File
+        字符串路径 String
+        字节输出流 OutputStream
+        字符输出流 Writer
+    字节打印流
+      PrintStream (File file)构造时能直接操作文件
+        构造时可以接受的参数类型
+          file对象  new File
+          字符串路径 String
+          字节输出流 OutputStream
+
+    BufferedReader bufr = new BufferedReader(new InputStreamReader(System.in));  将键盘录入的数据进行操作 读取操作--源
+
+    PrintWriter out = new PrintWriter(System.out,true); true表示，使用了print类方法后直接刷新------>new PrintWriter(new BufferedWriter(new FileWriter("a.txt")),true) 边在输入台输入，文本内边产生数据
+
+    String line = null;
+    while((line=bufr.readLine())!=null){
+      if("结束标记".equals(line))
+        break;
+      out.write(line.toUpperCase());------------>println
+      //out.flush();
+    }
+    out.close(); 记住关
+    bufr.close();
+
+
+-------------------------------
+序列流
+  SequenceInputStream
+  对多个流进行合并  多个源对应一个目的
+  Vector<FileInputStream> v = new Vector<FileInputStream>();
+  v.add(new FileInputStream("源文件1"))；
+  ...
+  Enumeration<FileInputStream> en = v.elements();
+  SequenceInputStream sis = new SequenceInputStream();
+
+  FileOutputStream fos = new FileOutputStream("新的集合文件");
+  byte[] buf = new byte[1024];
+  int len = 0;
+  while((len=sis.read(buf))!=-1){
+    fos.writer(buf,0,len);
+  }
+  fos.close();
+  sis.close();
+
+-----------------------------------
+切割
+  SplitFile
+
+    FileInputStream fis = new FileInputStream(" 源文件") 关联源文件
+    FileOutputStream fos  = new null;
+    byte[] buf = new byte[1024*1024]  以1M为单位的byte数组
+    int len = 0;
+    while((len = fis.read(buf))!=-1){
+      fos = new FileOutputStream("被分割后的分割对象"+(count++)".part") .part文件
+      fos.write(buf,0,len);
+      fos.close();
+    }
+    fis.close();
+
+组合
+public static void merge()throws IOException{
+  ArrayList<FileInputStream> al = new ArrayList<FileInputStream>();
+
+  for(int x=1; x<=3; x++){
+    al.add(new FileInputStream("c:\\splitfiles\\"+x+".part"));
+  }
+
+  final Iterator<FileInputStream> it = al.iterator();
+
+  Enumeration<FileInputStream> en = new Enumeration<FileInputStream>(){
+    public boolean hasMoreElements(){
+      return it.hasNext();
+    }
+    public FileInputStream nextElement(){
+      return it.next();
+    }
+  };
+
+  SequenceInputStream sis = new SequenceInputStream(en);
+
+  FileOutputStream fos = new FileOutputStream("c:\\splitfiles\\0.bmp");
+
+  byte[] buf = new byte[1024];
+
+  int len = 0;
+
+  while((len=sis.read(buf))!=-1){
+    fos.write(buf,0,len);
+  }
+
+  fos.close();
+  sis.close();
+}
+
+
+---------------------------------------
+对象的序列化---->将对象存放在硬盘上
+  ObjectInputStream     new出来的对象存在于堆内存中，静态是不能被序列化的
+  ObjectOutputStream
+    被操作的对象需要实现Serializable(标记接口,没有需要实现内容，仅仅添加了一个UID)
+    该是UID可以手动修改的，在操作对象类中添加public static final long serizlVersionUID = 42L;
+    被关键字transient 修饰的对象不能被序列化
+
+
+    write() 和 writeInt() 的小区别
+    对象存入的序列化
+    ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("操作对象"));
+    oos.writerObject(new 新对象); 该对象的类必须实现Srializable接口，导io包
+    oos.close();
+
+    序列化的读取
+    ObjectInputStream ois = new ObjectInputStream(new FileInputStream("被序列化后的文件"));
+    类 对象 = (强转)ois.readObject();
+    ois.close();
+
+---------------------------------------
+管道流
+  PipedInputStream
+  PipedOutputStream
+  输入输出可以直接进行连接，通过结合线程使用
+
+  class Read  implements Runable{
+    private PipedInputStream in;
+    Read(PipedInputStream in){
+      this.in = in;
+    }
+    public void run(){//覆盖run方法
+      try{
+        byte[] buf = new byte[1024];
+
+  			System.out.println("读取前。。没有数据,阻塞");
+  			int len = in.read(buf); 阻塞方法
+  			System.out.println("读到数据。。阻塞结束");
+        String s= new String(buf,0,len);
+        System.out.println(s);
+        in.close();
+      }
+      catch (IOException e){throw new RuntimeException("管道读取流失败");}
+    }
+  }
+  class Write  implements Runable{
+    private PipedOutputStream out;
+    Read(PipedOutputStream out){
+      this.out = out;
+    }
+    public void run(){//覆盖run方法
+    try{
+      System.out.println("开始写入数据，等待6秒后。");
+      Thread.sleep(6000);
+      out.write("piped lai la".getBytes());
+      out.close();
+    }
+    catch (Exception e){throw new RuntimeException("管道输出流失败");}
+  }
+    mian{
+    PipedInputStream in = new PipedInputStream();
+    PipedOutputStream out = new PipedOutputStream();
+    in.connect(out);
+    Read r = new Read(in);
+    Write w = new Write(out);
+    new Thread(r).start();
+    new Thread(w).start();
+    }
+----------------------------------------------------------------
+RandomAccessFile
+  不是IO体系中的子类，直接继承Object，但又作为IO包中的成员，内部封装了字节输入流和输出流，使它同时具备读和写的功能，内部封装了一个大型的byte[]，而且通过指针对数组元素进行操作，只能操作文件，而且操作文件需要满足模式
+  多线程下载！非常有用
+
+  getFilePoint 获取指针位置
+  seek 改变指针位置
+
+  public static void writeFile(){
+    RandomAccessFile raf = new RandomAccessFile("操作的问键","所选用的模式，参看文档"); r 只读模式 rw 读写模式，操作文件不存在还会创建
+    raf.writer("数据",getBytes()); //如果写入的数据是一个大于257的int类型数据，需要使用writerInt方法防止丢失8位以为的数据
+    在添加一个数据后，如果想要从第二个数据开始取，只需要改变指针的位置 raf.seek(指针位置)，或者skipBytes(int)跳过多少，这种改变指针的位置同样适用于写的方法
+
+    raf.close();
+  }
+  public staitc void readFile(){
+    RandomAccessFile raf = new RandomAccessFile("操作文件","r 只读");
+    byte[] buf = new byte[4];
+    raf.read(buf);
+    String name = new String(buf);
+    int age = raf.readInt();
+  }
+
+-----------------------------------------------------------
+DataStream  可以用于操作基本数据类型的数据流对象
+  DataInputStream
+  DataOutputStream
+
+  DataOutputStream dos = new DataOutputStream("存于文件");
+  DataInputStream dis = new DataInputStream("存于的文件");
+
+  通过.writer__跟上基本数据类型写，取
+
+-----------------------------------------------------------
+操作字节数组
+  ByteArrayInputStream ：在构造的时候，需要接收数据源，。而且数据源是一个字节数组。
+  ByteArrayOutputStream： 在构造的时候，不用定义数据目的，因为该对象中已经内部封装了可变长度的字节数组,这就是数据目的地。
+
+  因为这两个流对象都操作的数组，并没有使用系统资源。
+  所以，不用进行close关闭。
+
+  在流操作规律讲解时：
+  源设备，
+  	键盘 System.in，硬盘 FileStream，内存 ArrayStream。
+  目的设备：
+  	控制台 System.out，硬盘FileStream，内存 ArrayStream。
+  用流的读写思想来操作数据。
+    ByteArrayInputStream bis = new ByteArrayInputStream("ABCDEFD".getBytes());
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    int by = 0;
+    while((by=bis.read())!=-1){
+      bos.write(by);
+    } 
+操作字符数组
+  CharArrayReader
+  CharArrayWrite
+操作字符串
+  StringReader
+  StringWriter

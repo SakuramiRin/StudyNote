@@ -1,0 +1,17 @@
+字符编码
+  通过子类转换流来完成。
+    InputStreamReader
+    OutputStreamWirter
+
+  ASCII
+  ISO8859-1 拉丁码表，欧洲码表
+  GB2321 中文小编码表
+  GBK 中文大编码表 特别小心，Gbk错编成UTF-8后再回编的乱码错码问题
+  Unicode 国际标准码 全两位字节
+  UTF-8 3-1字节
+
+  编码 String -->byte[] str.getBytes(charsetName);
+  解码 byte[] --->String new String(byte[],charsetName);
+
+  get提交，必须通过服务器内部在进行一次转码
+  Post提交，可以通过服务器函数 set???ecoding

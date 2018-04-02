@@ -1,0 +1,74 @@
+使用替代stop()的interrupt(中断)方法。
+  停止线程的方法只有一种了：run方法结束
+  因为多线程中线程运行代码一般都是循环的，只要控制了循环了即可
+
+  interrupt方法的含义是将处于冻结(中断)线程的方法强制恢复到运行状态
+
+  class StopThread implements Runnable{
+  	private boolean flag =true;
+
+  	public  void run(){
+  		while(flag){
+  			System.out.println(Thread.currentThread().getName()+"....run");
+  		}
+  	}
+  	public void changeFlag(){
+  		flag = false;
+  	}
+  }
+
+ class  StopThreadDemo{
+  	public static void main(String[] args) {
+  		StopThread st = new StopThread();
+
+  		Thread t1 = new Thread(st);
+  		Thread t2 = new Thread(st);
+
+  		//t1.setDaemon(true);
+  		//t2.setDaemon(true);
+  		t1.start();
+  		t2.start();
+
+  		int num = 0;
+
+  		while(true){
+  			if(num++ == 60){
+  				//st.changeFlag();
+  				//t1.interrupt();
+  				//t2.interrupt();
+  				break;
+  			}
+  			System.out.println(Thread.currentThread().getName()+"......."+num);
+  		}
+  		System.out.println("over");
+  	}
+  }
+
+特殊情况：
+  当线程处于冻结状态，就不会读取到标记，那么线程就不会结束
+  这时当没有指定的方式让冻结状态的线程恢复到运行状态时，就需要对冻结进行清除
+  强制让线程恢复到运行状态中来。这样就可以操作标记让线程结束
+
+-----------------------------------------------------------
+守护线程(后台线程)【setDaemon】
+  我们所能看到的都是前台线程
+  遮羞后台线程和前台线程一样，一同抢劫cpu的执行权
+  当所有前台线程都结束后，后台线程会自动结束
+
+-------------------------------------------------------------
+join()
+  主线程等待到该线程死亡才能获得cpu执行权，其中的如果存在第三方线程，join线程和第三方线程不冲突
+
+  当A线程执行到了B线程的.join()方法时，A就会等待。等B线程都执行完，A才会执行。
+
+  join可以用来临时加入线程执行
+
+--------------------------------------------------------------
+设置优先级
+  setPriority(Thread._)  MAX_PRIORITY 1   NORM_PRIORITY 5    MIN_PRIORITY 10
+
+
+------------------------------------------------------
+yield()
+  暂停当前正在执行的线程对象，并执行其他线程
+  可以让执行线程交替运行 

@@ -1,0 +1,226 @@
+<!-- html 超文本标签语言
+  .html .htm
+  <标签 属性(key="value")>
+  不区分大小写
+  成对标签：围堵标签，开放标签+闭合标签 内容：
+  单个标签 空标签 -->
+<!-- ================================================ -->
+<html>
+  <head>
+    <title>标题</title>
+    <meta charset="utf-8" name="keywords" content="关键词" name="description" content="描述"/>
+    <!--html4格式 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> -->
+    <!-- <base target="_blank" base标签使所有页面新窗口/> -->
+    <!-- <meta http-equiv="Refresh" content="5秒;url=  "> 页面重定向-->
+  </head>
+  <body background="url">
+
+  </body>
+</html>
+<!-- src href区别================================== -->
+<!-- href 表示超文本引用（hypertext reference），在 link和a 等元素上使用。不会停止对当前文档的处理，是与该页面有关联，是引用
+src 表示来源地址，在 img、script、iframe 等元素上。是页面必不可少的一部分，是引入
+-->
+
+<!-- 文本========================================= -->
+<!--注释 条件注释[if IE 8]--><!--[endif]-->
+<h 1~6>
+  <!-- 标题 自动换行 默认加粗 属性 align 对齐方式 left right center -->
+<!-- font 不使用的字体face，尺寸size，颜色color 颜色="#XXXXXXX"-->
+
+<br/>
+<!-- 换行 -->
+<p></p>
+  <!-- 段落 -->
+<b></b>
+<strong></strong>
+  <!-- 加粗 -->
+<pre></pre>
+<!-- 保留空格和换行的欲留文本 -->
+<i></i>
+  <!-- 斜体 -->
+<hr/>
+  <!-- 水平线 -->
+<a name=" "或者 id=""></a>
+<!-- 锚 --><!--href="# "-->
+<a href="跳转路径" target=""> &nbsp; 空格</a>
+  <!-- target 以什么方式打开连接 _blank会以新窗口打开 self默认 链接用 当前-->
+  <!-- <a href="mailto:someone@microsoft.com?subject=Hello%20again">发送邮件</a> -->
+<div>
+  <!-- 块标签，带换行 -->
+<span>
+  <!-- 行内块标签，不带换行 -->
+<!-- 图片=========================================================== -->
+<img src="图片路径" alt="替代文字" title="移动上去显示的文字" width="宽度" height="高" align="bottom middle top left right"/>
+  <!-- 相对路径：./ 当前目录 ../上级目录   -->
+  <!-- 带协议的绝对路径： http://www.baidu.com -->
+  <!-- <map>定义图像地图<area>定义图像地图的可点区域 -->
+<!-- 列表================================================================== -->
+<ol type="a"></ol>
+  <!-- 有序列表 -->
+<ul ></ul>
+  <!-- 无序列表 -->
+<li></li>
+  <!-- 列表项 -->
+<!-- 表格====================================== -->
+<table border="边框像素值" width="" cellpading="单元格边距" cellspacing="单元格间距">
+  <caption>标题</caption>
+  <tr align="center">
+    <!-- 行 -->
+    <th><!-- 表头单元格且默认粗体居中，也就是该行列的定义 --></th>
+    <td colspan="跨列合并" rowspan="跨行合并">
+      <!-- 列 -->
+    </td>
+  </tr>
+</table>
+
+
+
+<!-- 表单标签================================================ -->
+<!-- HTML5 增加了如下表单元素：
+  <datalist> 下拉表，定义输入控件的预定义选项。
+  <keygen>  定义键对生成器字段（用于表单）
+  <output>  定义计算结果 -->
+<form action="信息提交的路径，默认为当前页面，一般都是提交给PHP页面" method="get显示 post隐藏">
+    <!-- 从浏览器端收集用户信息 -->
+     <!-- <fieldset> 组合表单数据 -->
+  <input type="password" name="设置为同一组" readonly只读 disabled不可用 size="规定尺寸，默认20"></input>
+    <!-- text默认 password密码 radio单选 CheckBox多选 file文件框 submit提交 reset重置 button按钮 hidden隐藏域，会提交 image图片提交
+
+
+
+    html5 新的输入类型===>于input type=""
+    color
+    date  日期下拉表 可限制minmax
+    datetime
+    datetime-local 无时区的
+    email
+    month
+    number 该类型可以限制字段
+    range 拖动条 min+max
+    search
+    tel 电话
+    time
+    url
+    week
+
+
+    autocomplete 自动完成
+    autofocus 自动聚焦
+    form
+    formaction  form action的简化
+    formenctype 覆盖表单提交编码集
+    formmethod  覆盖表单提交方法
+    formnovalidate
+    formtarget  覆盖表单提交后，如何接受响应
+    height 和 width
+    list  预设下拉表值
+    min 和 max
+    multiple 对于mail和file，接受一个和一个以上的值
+    novalidate 是否对进行表单校验
+    pattern (regexp)  检查正则表达式
+    placeholder 内容提示
+    required  必选
+    step
+
+    -->
+    <!-- 所有提交到服务器的内容都必须包含name属性 -->
+  <input type="button" value="初始值"></input>
+  <select name="" value=""> <!-- 下拉选带option -->
+    <option></option>
+  </select>
+  <textarea cols="列" rows="行">
+  </textarea>
+</form>
+
+<!-- 提交到服务器的内容的格式 key=value&
+单选复选要加value值 -->
+<!-- 文本密码的value值为预设值 -->
+<!-- 单多选 checked="checked" -->
+<!-- 下拉选 selected="selected" -->
+
+<!-- 框架======================================================== -->
+<!-- frameset:框架集 rows/columns 值规定了每行或者每列占据屏幕的面积
+frame：框架 -->
+<!-- 常用属性cols rows -->
+<!-- 常用子标签frame,大网页中添加小网页 src= "url",最好不要和body共存,同时,可以通过target 的framename指定值 ,通常还需要指定noresize="noresize" 避免框架被拖动-->
+<!-- 为不支持框架的浏览器添加<noframes> -->
+<!-- iframe 网页中显示网页 src=""-->
+
+<!-- ============================================== -->
+
+<!--一些字体
+<b> 	定义粗体文本。
+<big> 	定义大号字。
+<em> 	定义着重文字。
+<i> 	定义斜体字。
+<small> 	定义小号字。
+<strong> 	定义加重语气。
+<sub> 	定义下标字。
+<sup> 	定义上标字。
+<ins> 	定义插入字。
+<del> 	定义删除字。 -->
+
+<!-- HTML5 语义元素
+header 	定义文档或节的页眉
+nav 	定义导航链接的容器
+section 	定义文档中的节
+article 	定义独立的自包含文章
+aside 	定义内容之外的内容（比如侧栏）
+footer 	定义文档或节的页脚
+details 	定义额外的细节
+summary 	定义 details 元素的标题 -->
+
+
+<!--html5 新语意
+<article> 	定义文章。
+<aside> 	定义页面内容以外的内容(如侧栏)。
+<details> 	定义用户能够查看或隐藏的额外细节。
+<figcaption> 	定义 <figure> 元素的标题。
+<figure> 	规定自包含内容，比如图示、图表、照片、代码清单等。
+<footer> 	定义文档或节的页脚。
+<header> 	规定文档或节的页眉。
+<main> 	规定文档的主内容。
+<mark> 	定义重要的或强调的文本。
+<nav> 	定义导航链接。
+<section> 	定义文档中的节。
+<summary> 	定义 <details> 元素的可见标题。
+<time> 	定义日期/时间。 -->
+
+<!-- html5新媒体元素
+<audio> 	定义声音或音乐内容。
+<embed> 	定义外部应用程序的容器（比如插件）。
+<source> 	定义 <video> 和 <audio> 的来源。
+<track> 	定义 <video> 和 <audio> 的轨道。
+<video> 	定义视频或影片内容。 -->
+
+<!-- <div id="header"> 	<header>
+<div id="menu"> 	<nav>
+<div id="content"> 	<section>
+<div id="post"> 	<article>
+<div id="footer"> 	<footer> -->
+
+
+<!-- =============================================== -->
+<!-- 最好的 HTML 视频解决方法
+
+HTML 5 + <object> + <embed>
+
+<video width="320" height="240" controls="controls">
+  <source src="movie.mp4" type="video/mp4" />
+  <source src="movie.ogg" type="video/ogg" />
+  <source src="movie.webm" type="video/webm" />
+  <object data="movie.mp4" width="320" height="240">
+    <embed src="movie.swf" width="320" height="240" />
+  </object>
+</video> -->
+
+
+<!-- 最好的 HTML 音频解决方法
+实例
+
+<audio controls="controls" height="100" width="100">
+  <source src="song.mp3" type="audio/mp3" />
+  <source src="song.ogg" type="audio/ogg" />
+<embed height="100" width="100" src="song.mp3" />
+</audio> -->

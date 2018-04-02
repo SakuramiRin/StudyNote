@@ -1,0 +1,152 @@
+CSS 层叠样式表 Cascading Style Sheets
+  格式： 选择器{属性:值;属性:值}
+
+  <span style="font-size": ; color:""></span>
+
+  整合方式：
+    1.内联样式表 通过标签的style属性设置样式，不使用
+     <div style=""></div>
+    2.内部样式表 在当前页面中使用的样式
+      <head>
+        <style>
+          #divId2{
+            background-color: inherit;
+          }
+        </style>
+      </head>
+    3.外部样式表 有独立的css文件
+
+    <link rel="stylesheet" href="css/demo.css" type="text/css"/>
+      #divId3{
+
+      }
+
+    选择器：
+      id选择器
+        html元素含有id属性
+        css中通过#引入，后面加入id的值
+          #id{
+
+          }
+      class选择器
+        html元素含有class属性
+        css中通过.引入，后面加入class的值
+        .class{
+
+        }
+      元素选择器
+        直接用元素(标签)名即可
+          XXX{
+
+          }
+
+    派生选择器：
+      属性选择器
+        html元素必须要一个属性不论属性是什么且有值 <xxx table="value">
+        css中通过
+          元素名[属性="值"]{
+
+          }
+      后代选择器
+        选择器 后代选择器{
+
+        }
+        在满足第一个选择器的条件下找后代的选择器，给满足条件的元素添加样式
+        即在大的选择器后，局部改变小的部分
+
+      锚伪劣选择器
+        a:link{} 未访问的连接
+        a:visited{} 已访问的链接
+        a:hover{} 鼠标移动到链接上
+        a:active{}  选定的链接
+
+    注意：
+      若多个样式作用于一个元素的时候
+        不同的样式会叠加
+        相同的样式为最近原则
+      多个选择器作用于一个元素的时候
+        越特殊优先级越高 div最高
+
+====================================================
+属性
+  字体
+    font-family:字体
+    font-size:
+    font-style:
+    font-variant 	以小型大写字体或者正常字体显示文本。
+    font-weight 	设置字体的粗细。
+  文本
+    color:
+    direction 	设置文本方向。
+    line-height 	设置行高。
+    letter-spacing 	设置字符间距。
+    text-align 	对齐元素中的文本。
+    text-decoration 	向文本添加修饰。
+    text-indent 	缩进元素中文本的首行。
+    text-shadow 	设置文本阴影。CSS2 包含该属性，但是 CSS2.1 没有保留该属性。
+    text-transform 	控制元素中的字母。
+    unicode-bidi 	设置文本方向。
+    white-space 	设置元素中空白的处理方式。
+    word-spacing 	设置字间距。
+  链接样式：
+    a:link - 普通的、未被访问的链接
+    a:visited - 用户已访问的链接
+    a:hover - 鼠标指针位于链接的上方
+    a:active - 链接被点击的时刻
+  列表：
+    list-style-type:设置列表项前面的类型 比如实心圆
+    list-style-image:设置图片为列表项 使用时 url("");
+    list-style-position 	设置列表中列表项标志的位置。
+  表格：
+    border-collapse 	设置是否把表格边框合并为单一的边框。
+    border-spacing 	设置分隔单元格边框的距离。
+    caption-side 	设置表格标题的位置。
+    empty-cells 	设置是否显示表格中的空单元格。
+    table-layout 	设置显示单元、行和列的算法。
+  边框：
+    outline-color 	设置轮廓的颜色。
+    outline-style 	设置轮廓的样式。
+    outline-width 	设置轮廓的宽度。
+  背景：
+    background-color:
+    background-image: url
+      background-repeat
+      background-position 定位
+    background-attachment 	背景图像是否固定或者随着页面的其余部分滚动
+      background-attachment:scroll 背景随页面滚动
+      background-attachment:fixed 背景不会随页面滚动
+  尺寸：
+    width：
+    height：
+  定位：
+    position 	把元素放置到一个静态的、相对的、绝对的、或固定的位置中。
+      position:relative 相对定位
+      position:absolute 绝对定位
+    top 	定义了一个定位元素的上外边距边界与其包含块上边界之间的偏移。
+    right 	定义了定位元素右外边距边界与其包含块右边界之间的偏移。
+    bottom 	定义了定位元素下外边距边界与其包含块下边界之间的偏移。
+    left 	定义了定位元素左外边距边界与其包含块左边界之间的偏移。
+    overflow 	设置当元素的内容溢出其区域时发生的事情。
+    clip 	设置元素的形状。元素被剪入这个形状之中，然后显示出来。
+    vertical-align 	设置元素的垂直对齐方式。
+    z-index 	设置元素的堆叠顺序。默认为0
+    visibility：visible,hidden - 指定元素应当可见还是隐藏
+  浮动：
+    float:可选值 left right
+    clear:设置元素的两边是否有其他的浮动元素，值为both 的话两边都不允许
+  效果：
+    filter：- 效果，参考API
+  分类：
+    display:设置是否及如何显示元素
+      none：此元素不会被显示
+      block：此元素将显示为块级元素，带换行符
+      inline： 默认。内联元素，无换行符
+
+  框模型
+    margin 与其他元素的距离 外边距
+      border  边框
+        padding 内边距：四个值
+          element 可接 -top 等
+
+border-radius:半径px 属性用于创建圆角
+box-shadow: 左px 下px 虚化px #颜色

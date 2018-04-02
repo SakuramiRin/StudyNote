@@ -1,0 +1,457 @@
+网络模型
+  OSI模型
+  TCP/IP模型
+网络通信要素
+  IP地址
+  端口号
+  传输协议 tcp/ip
+
+  tcp与udp
+    udp:
+      将数据和源和目的封装成数据包，不需要建立连接
+      每个数据包的大小在64K以内
+      因为无连接，是不可靠的协议
+      速度快
+    tcp
+      建立连接，形成传输数据的通道。
+      在连接中进行大数据量的传输
+      通过3次握手完成连接，是可靠的协议
+      必须建立连接，效率低
+
+  socket 插座
+    为网络服务提供的一种机制
+    通信两端都含有Socket
+    网络通信其实就是scoket间的通信
+    数据在两个socket间通过IO传输
+
+  import java.net.*;
+
+  InetAddress i = InetAddress.getLocalHost();
+  getHostAddress();
+  getHostName();
+
+  getByName();
+
+
+  --------------------------------------------
+  udp
+    发送
+      import java.net.*;
+
+      建立udpsocket服务
+      提供数据，封装数据包
+      通过socket服务发送
+      关闭资源
+
+      DatagramSocket ds = new DatagramSocket(10000); 10000端口
+
+      byte[] buf = "数据".getBytes();
+      DatagramPacket dp = new DatagramPacket(buf,buf.length,InetAddress.getByName("192.168.1.1"));
+
+      ds.send(dp);
+      ds.close();
+    接受
+      定义udpsocket服务，通常会监听一个端口。其实就是给这个接受网络应用程序定义数字标识
+      定义一个数据包，因为要存储接受到的字节数据，因为数据包对象中有很多功能可以提取到字节数据中的不同数据
+      通过socket服务的receive方法将收到的数据存入已定义好的数据包中
+      通过数据包对象的特有功能。将这些不同数据取出。打印在控制台上
+      关闭资源
+
+      DatagramSocket ds = new DatagramSocket(10000);
+
+      byte[] buf  = new byte[1024];
+      DatagramPacket dp = new DatagramPacket(buf,buf.length);
+
+      ds.receive(dp);
+
+      String ip = dp.getAddress().getHostAddress();
+      String data = new String(dp.getData(),0,dp.getLength());
+      int port = dp.getPort();
+
+      ds.close();
+
+
+---------------------------------------
+通信
+import java.net.*;
+import java.io.*;
+class  UdpSend2
+{
+	public static void main(String[] args) throws Exception
+	{
+		DatagramSocket ds = new DatagramSocket();
+
+		BufferedReader bufr =
+			new BufferedReader(new InputStreamReader(System.in));
+
+		String line = null;
+
+		while((line=bufr.readLine())!=null)
+		{
+			if("886".equals(line))
+				break;
+
+			byte[] buf = line.getBytes();
+
+			DatagramPacket dp =
+				new DatagramPacket(buf,buf.length,InetAddress.getByName("192.168.1.255"),10001);
+
+			ds.send(dp);
+		}
+		ds.close();
+	}
+}
+
+
+
+class  UdpRece2
+{
+	public static void main(String[] args) throws Exception
+	{
+		DatagramSocket ds = new DatagramSocket(10001);
+
+		while(true)
+		{
+			byte[] buf = new byte[1024];
+			DatagramPacket dp = new DatagramPacket(buf,buf.length);
+
+			ds.receive(dp);
+
+			String ip = dp.getAddress().getHostAddress();
+			String data = new String(dp.getData(),0,dp.getLength());
+
+
+			System.out.println(ip+"::"+data);
+		}
+	}
+}
+
+----------------------------------------------------------------
+/*
+编写一个聊天程序。
+有收数据的部分，和发数据的部分。
+这两部分需要同时执行。
+那就需要用到多线程技术。
+一个线程控制收，一个线程控制发。
+
+因为收和发动作是不一致的，所以要定义两个run方法。
+而且这两个方法要封装到不同的类中。
+
+*/
+import java.io.*;
+import java.net.*;
+class Send implements Runnable
+{
+	private DatagramSocket ds;
+	public Send(DatagramSocket ds)
+	{
+		this.ds = ds;
+	}
+
+
+	public void run()
+	{
+		try
+		{
+			BufferedReader bufr = new BufferedReader(new InputStreamReader(System.in));
+
+			String line = null;
+
+			while((line=bufr.readLine())!=null)
+			{
+
+
+				byte[] buf = line.getBytes();
+
+				DatagramPacket dp =
+					new DatagramPacket(buf,buf.length,InetAddress.getByName("192.168.1.255"),10002);
+
+				ds.send(dp);
+
+				if("886".equals(line))
+					break;
+			}
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException("发送端失败");
+		}
+	}
+}
+
+class Rece implements Runnable
+{
+
+	private DatagramSocket ds;
+	public Rece(DatagramSocket ds)
+	{
+		this.ds = ds;
+	}
+	public void run()
+	{
+		try
+		{
+			while(true)
+			{
+				byte[] buf = new byte[1024];
+				DatagramPacket dp = new DatagramPacket(buf,buf.length);
+
+				ds.receive(dp);
+
+
+				String ip = dp.getAddress().getHostAddress();
+
+				String data = new String(dp.getData(),0,dp.getLength());
+
+				if("886".equals(data))
+				{
+					System.out.println(ip+"....离开聊天室");
+					break;
+				}
+
+
+				System.out.println(ip+":"+data);
+			}
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException("接收端失败");
+		}
+	}
+}
+
+
+class  ChatDemo
+{
+	public static void main(String[] args) throws Exception
+	{
+		DatagramSocket sendSocket = new DatagramSocket();
+		DatagramSocket receSocket = new DatagramSocket(10002);
+
+		new Thread(new Send(sendSocket)).start();
+		new Thread(new Rece(receSocket)).start();
+
+	}
+}
+--------------------------------------------------------
+Tcp
+  socket客户端 serversocket服务端
+
+  创建socket服务，指定要连接的主机和端口
+    Socket s = new Socket("192.168.1.",端口);
+  为了发送数据，应该获取socket流中的输出流
+  OutputStream out = s.getOutputStream();
+  out.write("数据".getBytes());
+  s.close();
+
+
+  服务端
+    创建服务端的socket服务并监听一个端口
+    获取连接过来的客户端对象
+      通过ServerSocket的accept阻塞方法
+    客户端如果发送过来数据，使用对应的客户端对象，并获取到该客户端对象的读取流来读取到数据
+    关闭服务端(可选)
+
+    ServerSocket ss = new ServerSocket(10003);
+    Socket s = ss.accept();
+    String ip =  s.getInetAddress().getHostAddress();
+    InputStream is = s.getInputStream();
+    byte[] buf = new byte[1024];
+    int len = is.read(buf);
+    syso.(new String(buf,0,len));
+    s.close();
+    ss.close();
+
+-------------
+服务端反馈客户端
+  建立socket服务，指定要连接的主机和端口
+  应该获取socket流中的输出流，将数据写到该流中，通过网络发送给服务端
+  获取socket流中的输入流，将服务端反馈的数据获取到，打印
+  关闭客户端资源
+  class TcpClient2
+  {
+  	public static void main(String[] args)throws Exception
+  	{
+  		Socket s = new Socket("192.168.1.254",10004);
+
+  		OutputStream out = s.getOutputStream();
+
+  		out.write("服务端，你好".getBytes());
+
+
+  		InputStream in = s.getInputStream();
+
+  		byte[] buf = new byte[1024];
+
+  		int len = in.read(buf);
+
+  		System.out.println(new String(buf,0,len));
+
+  		s.close();
+  	}
+  }
+
+
+  class TcpServer2
+  {
+  	public static void main(String[] args) throws Exception
+  	{
+  		ServerSocket ss = new ServerSocket(10004);
+
+  		Socket s = ss.accept();
+
+  		String ip = s.getInetAddress().getHostAddress();
+  		System.out.println(ip+"....connected");
+  		InputStream in = s.getInputStream();
+
+  		byte[] buf = new byte[1024];
+
+  		int len = in.read(buf);
+
+  		System.out.println(new String(buf,0,len));
+
+
+  		OutputStream out = s.getOutputStream();
+
+
+  		Thread.sleep(10000);
+  		out.write("哥们收到,你也好".getBytes());
+
+  		s.close();
+
+  		ss.close();
+  	}
+  }
+
+
+---------------------------------------------------------------
+/*
+
+需求：建立一个文本转换服务器。
+客户端给服务端发送文本，服务单会将文本转成大写在返回给客户端。
+而且客户度可以不断的进行文本转换。当客户端输入over时，转换结束。
+
+分析：
+客户端：
+既然是操作设备上的数据，那么就可以使用io技术，并按照io的操作规律来思考。
+源：键盘录入。
+目的：网络设备，网络输出流。
+而且操作的是文本数据。可以选择字符流。
+
+步骤
+1，建立服务。
+2，获取键盘录入。
+3，将数据发给服务端。
+4，后去服务端返回的大写数据。
+5，结束，关资源。
+
+都是文本数据，可以使用字符流进行操作，同时提高效率，加入缓冲。
+
+
+*/
+import java.io.*;
+import java.net.*;
+
+class  TransClient
+{
+	public static void main(String[] args) throws Exception
+	{
+		Socket s = new Socket("192.168.1.254",10005);
+
+
+		//定义读取键盘数据的流对象。
+		BufferedReader bufr =
+			new BufferedReader(new InputStreamReader(System.in));
+
+
+		//定义目的，将数据写入到socket输出流。发给服务端。
+		//BufferedWriter bufOut =
+			//new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+		PrintWriter out = new PrintWriter(s.getOutputStream(),true);
+
+
+
+		//定义一个socket读取流，读取服务端返回的大写信息。
+		BufferedReader bufIn =
+			new BufferedReader(new InputStreamReader(s.getInputStream()));
+
+		String line = null;
+
+		while((line=bufr.readLine())!=null)
+		{
+			if("over".equals(line))
+				break;
+
+			out.println(line);
+//			bufOut.write(line);
+//			bufOut.newLine();
+//			bufOut.flush();
+
+			String str =bufIn.readLine();
+			System.out.println("server:"+str);
+
+		}
+
+		bufr.close();
+		s.close();
+
+
+	}
+}
+/*
+
+服务端：
+源：socket读取流。
+目的：socket输出流。
+都是文本，装饰。
+
+
+
+*/
+
+class  TransServer
+{
+	public static void main(String[] args) throws Exception
+	{
+		ServerSocket ss = new ServerSocket(10005);
+
+		Socket s = ss.accept();
+		String ip = s.getInetAddress().getHostAddress();
+		System.out.println(ip+"....connected");
+
+		//读取socket读取流中的数据。
+		BufferedReader bufIn =
+			new BufferedReader(new InputStreamReader(s.getInputStream()));
+
+		//目的。socket输出流。将大写数据写入到socket输出流，并发送给客户端。
+		//BufferedWriter bufOut =
+			//new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+
+		PrintWriter out = new PrintWriter(s.getOutputStream(),true);
+
+		String line = null;
+		while((line=bufIn.readLine())!=null)
+		{
+
+			System.out.println(line);
+
+			out.println(line.toUpperCase());
+//			bufOut.write(line.toUpperCase());
+//			bufOut.newLine();
+//			bufOut.flush();
+		}
+
+		s.close();
+		ss.close();
+
+	}
+}
+/*
+该例子出现的问题。
+现象：客户端和服务端都在莫名的等待。
+为什么呢？
+因为客户端和服务端都有阻塞式方法。这些方法么没有读到结束标记。那么就一直等
+而导致两端，都在等待。
+
+
+*/

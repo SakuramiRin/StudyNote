@@ -1,0 +1,80 @@
+JSON：JavaScript 对象表示法(JavaScript Object Notation)
+  存储和交换文本信息的语法,类似 XML, 轻量级的文本数据交换格式
+  比 XML 更小、更快，更易解析
+  独立于语言！
+  JSON 使用 JavaScript 语法来描述数据对象，但是 JSON 仍然独立于语言和平台。JSON 解析器和 JSON 库支持许多不同的编程语言。
+
+  JSON - 转换为 JavaScript 对象，使用.json文件
+  JSON 文本格式在语法上与创建 JavaScript 对象的代码相同。
+  由于这种相似性，无需解析器，JavaScript 程序能够使用内建的 eval() 函数，用 JSON 数据来生成原生的 JavaScript 对象
+
+语法：是js对象表示法语法的子集
+{
+  "name": [
+    { "键1":"值1" , "键2":"值2" }, //数据在键/值对中 数据由逗号分隔
+    { "键1":"值1" , "键2":"值2" } //花括号保存对象
+  ] //方括号保存数组
+}
+
+    数字（整数或浮点数）
+    字符串（在双引号中）
+    逻辑值（true 或 false）
+    数组（在方括号中）
+    对象（在花括号中）
+    null
+
+    调用： name[数组角标，若果有].键;
+
+===============================================
+<p>
+  添加值: <span id=" "></span><br />
+</p>
+
+<script type="text/javascript">
+  var JSONObject= {
+    "键":"值",
+    " ":" "
+  };
+
+  document.getElementById("获取元素id").innerHTML=JSONObject.键
+</script>
+
+=========================================================================
+与xml不同之处
+  没有结束标签
+  更短
+  读写速度更快
+  能够使用内建的js eval()方法进行解析
+  能够使用数组
+  不使用保留字
+
+即
+  使用 XML
+    读取 XML 文档
+    使用 XML DOM 来循环遍历文档
+    读取值并存储在变量中
+  使用 JSON
+    读取 JSON 字符串
+    用 eval() 处理 JSON 字符串
+
+===================================================
+创建包含 JSON 语法的 JavaScript 字符串：
+var txt = '{ "employees" : [' +
+'{ "firstName":"Bill" , "lastName":"Gates" },' +
+'{ "firstName":"George" , "lastName":"Bush" },' +
+'{ "firstName":"Thomas" , "lastName":"Carter" } ]}';
+
+由于 JSON 语法是 JavaScript 语法的子集，JavaScript 函数 eval() 可用于将 JSON 文本转换为 JavaScript 对象。
+eval() 函数使用的是 JavaScript 编译器，可解析 JSON 文本，然后生成 JavaScript 对象。必须把文本包围在括号中，这样才能避免语法错误：
+var obj = eval ("(" + txt + ")");
+
+
+在网页中使用 JavaScript 对象：
+<p>
+First Name: <span id="fname"></span><br />
+Last Name: <span id="lname"></span><br />
+</p>
+<script type="text/javascript">
+document.getElementById("fname").innerHTML = obj.employees[1].firstName
+document.getElementById("lname").innerHTML = obj.employees[1].lastName
+</script>

@@ -1,0 +1,170 @@
+线程【synchronized 】
+线程是进程中的内容
+
+进程：是一个正在执行中的程序。
+		每一个进程执行都有一个执行顺序。该顺序是一个执行路径，或者叫一个控制单元。
+
+线程：就是进程中的一个独立的控制单元。
+		线程在控制着进程的执行。
+
+一个进程中至少有一个线程。
+
+Java VM  启动的时候会有一个进程java.exe.
+
+该进程中至少一个线程负责java程序的执行。
+而且这个线程运行的代码存在于main方法中。
+当然，jvm启动不止一个线程，还有负责垃圾回收的线程
+该线程称之为主线程。
+多线程是提高效率
+
+多个线程都获取cpu的执行权。cpu执行到谁，谁就运行，在某一个时刻，只能有一个程序在运行。(多核除外)---->多线程【随机性】
+-------------------------------------
+定义线程
+  两种方法：
+    1 extends Thread】继承Thread，重写Thread类中的run方法，调用线程的start方法，该方法由两个作用：启动线程调用run方法
+      重写run方法：run方法是Thread定义的一个用于存储线程要运行代码的功能
+			如果调用了线程对象的run方法，程序依然只会走主线程
+			线程状态不能多次被start()，否则会出现运行状态异常
+
+		2 implements Runnable】声明实现Runable接口的类。该类实现run方法，通过Thread类建立线程对象，将接口的子类对象作为实际参数传递给Thread类的构造函数,最后调用Thread类的start方法开启线程并调用Runnable接口子类的run方法
+			Thread t = new Thread(_);
+
+		区别
+			实现方式好处：避免了单继承的局限性。
+			在定义线程时，建立使用实现方式。
+
+			两种方式区别：
+			继承Thread:线程代码存放Thread子类run方法中。
+			实现Runnable，线程代码存在接口的子类的run方法。
+-------------------------------------
+线程的五种状态：
+									阻塞状态
+				start()			|		sleep() wait()
+	被创建---------->运行<----------------->冻结
+		|				run()结束|		sleep()	notify()	|
+		|					stop()|												|
+		|------------>消亡<--------------------|
+				stop()--->interrupt()
+
+			阻塞状态：具备运行资格，但是没有执行权
+			冻结状态：没有执行资格
+
+-------------------------------------
+线程有自己默认名称： Thread-编号0开始
+	用getName()方法获取，用setName()或者通过在继承了Thread的线程中对于构造函数传参时name
+	Class(String name){
+		super(name)；}
+
+	static Thread currentThread():获取当前对象
+	在线程中，用
+		currentThread().getName()
+
+		静态解决了共享！?
+
+------------------------------------------
+sleep()方法是一个抛出 throws InterruptedException 的方法
+	对于该异常，我们在我们的进程run方法中，通过try{}catch(InterruptedException e){}处理。且该异常不能向上抛，因为实现和继承的run方法没有抛出异常
+
+--------------------------------------
+线程的安全问题多来源于共享数据的错误
+	多线程的同步代码块
+	synchronized(对象){  该对象称之为 锁
+		需要被同步的代码
+	}
+	锁存在的弊端是增加了资源使用量，每一个拿到执行权的对象都需要判断一次锁
+
+	同时，函数也可以别synchronize的修饰
+
+	同步函数使用的锁就是this
+	静态同步函数使用的锁是Class对象
+		静态进内存是，内存中没有本类对象，但是一定有该类对应的字节码文件对象。
+		类名.class  该对象的类型是Class
+		静态的同步方法，使用的锁是该方法所在类的字节码文件对象。 类名.class
+
+-----------------------------------------
+死锁
+	原因：同步中嵌套同步
+	死锁程序看下：
+	class Test implements Runnable
+	{
+		private boolean flag;
+		Test(boolean flag)
+		{
+			this.flag = flag;
+		}
+
+		public void run()
+		{
+			if(flag)
+			{
+				while(true)
+				{
+					synchronized(MyLock.locka)
+					{
+						System.out.println(Thread.currentThread().getName()+"...if locka ");
+						synchronized(MyLock.lockb)
+						{
+							System.out.println(Thread.currentThread().getName()+"..if lockb");
+						}
+					}
+				}
+			}
+			else
+			{
+				while(true)
+				{
+					synchronized(MyLock.lockb)
+					{
+						System.out.println(Thread.currentThread().getName()+"..else lockb");
+						synchronized(MyLock.locka)
+						{
+							System.out.println(Thread.currentThread().getName()+".....else locka");
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	class MyLock
+	{
+		static Object locka = new Object();
+		static Object lockb = new Object();
+	}
+
+	class  DeadLockTest
+	{
+		public static void main(String[] args)
+		{
+			Thread t1 = new Thread(new Test(true));
+			Thread t2 = new Thread(new Test(false));
+			t1.start();
+			t2.start();
+		}
+	}
+
+
+----------------------------------------------------------------
+线程运用的标准写法
+class ThreadTest {
+	public static void main(String[] args){
+
+		new Thread(){		继承Thread子类的匿名内部类
+			public void run(){
+				...方法体
+			}
+		}.start();
+
+		...其他方法体
+
+		Runnable r  = new Runnable(){ 实现Runnable接口的匿名内部类
+			public void run(){
+				for(int x=0; x<100; x++){
+					System.out.println(Thread.currentThread().getName()+"....."+x);
+				}
+			}
+		};
+		new Thread(r).start();
+	}
+}
