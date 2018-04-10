@@ -1,0 +1,167 @@
+JDBC (Java Date Base Connectivity)
+就是一套API,SUN定义类或者接口。
+
+//使用DriverManager的静态方法registerDriver(Driver driver) 而Driver又是一个接口，，该接口的实习就交给了mysql去实现
+注册驱动//驱动也是类库，实现了Sun规定接口，注册驱动目的是告诉JVM用的哪种驱动
+  Class.forName("com.mysql.jdbc.Driver") //该注册驱动方式不会注册两次
+  //另外两种方式 类名.class;     对象.getClass();
+  //mysql的源码 DriverManager.registerDriver(new Driver());
+获取连接
+  Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306",用户名,密码);//DriverManager管理了一组jdbc操作
+  //Oracle的url jdbc:oracle:thin@localhost:1512@实例
+编写SQL//注意？号
+  String sql = "SELECT * FROM 数据库名 WHERE username=? AND password=?";
+创建预编译的语句执行者//Statement st = conn.creatStatement();不能解决sql注入攻击，  注入语句 __ 'or' 1=1，同时PreparedStatement 还能通过预编译存储，多次高效的执行SQL语句
+  PreparedStatement st = conn.PreparedStatement(sql);
+设置参数//调用PreparedStatement对象的set方法，设置参数
+  st.setObject(1,user);
+  st.setObject(2,password);
+执行SQL
+  ResultSet rs = st.executeQuery();//executeUpdate(String dql)能实现SQL语句中的insert delete update ，Update没有ResultSet？
+  //ResultSet依旧是一个接口，由mysql实现
+  //executeQuery不添加参数，因为已经由PreparedStatement
+处理结果
+  while(rs.next()){ //Boolean next()；有没有结果集
+    System.out.println(rs.getString("列名")+rs.getString("列名")); //ResultSet提供了get***多种方法
+  }
+释放资源
+  rs.close();
+  st.close();
+  conn.close();
+
+
+================================================
+JDBC工具类
+  public class JDBCUtils{
+    private JDBCUtils(){}//私有构造方法
+    private static Connection con;//静态方法只能调用静态成员变量
+    //static final String DRIVER_CLASS...这四条加载后编程了通过配置文件加载的第二种方法
+
+    static{ //只需要加载一次
+      try{
+        // ResourceBundle bundle = ResourceBundle.getBundle("jdbc")
+        Class.forName("com.mysql.jdbc.Driver");//String driverClass = bundle.getString("")
+        String url = "jdbc:mysql://localhost:3306/数据库名";//这四条配置信息全部通过bundle方法获得。
+        String username = "数据库用户名"; //
+        String password = "数据库登录密码";  //
+        /*该3句语句可以以全局变量Public static fianl 定义在成员变量上，但是不利于后期修改，需要使用Properties配置文件*/
+        con = DriverManager.getConnection(url,username,password);
+      }catch(Exception e){
+        throw new RuntimeException(ex+"连接失败");
+      }
+    }
+
+    public static Connection getConnection(){
+      return con;
+    }
+
+    public static void close(Connection con,Statement st,Result rs){//Statement用的是父类
+      if(rs!=null){
+        try{
+          rs.close();
+        }catch(SQLException ex){}
+        rs==null; //用垃圾机制回收
+      }
+      if(st!=null){
+        try{
+          st.close();
+        }catch(SQLException ex){}
+        st==null;
+      }
+      if(con!=null){
+        try{
+          con.close();
+        }catch(SQLException ex){}
+        con==null;
+      }
+    }
+
+    //还需要重载一下没有Result对象的关闭资源方法
+  }
+
+======================================
+配置文件
+  database.properties 建议放在src下,可以通过ResourceBundle工具快速获取里面的内容
+  driverClass=
+  url=
+  user=
+  password=
+加载配置文件 IO流
+
+public class JDBCUtilsConfig{
+  private static Connection con;
+  private static String driverClass;
+  ...
+
+  private static void readConfig()throws ClassNotFoundException,SQLException{
+    InputStream is = JDBCUtilsConfig.class.getClassLoader().getResourceAsStream("database.properties");
+    Properties pro = new Properties();
+    pro.load(is);
+    //syso.(pro);
+    //获取键值对
+    String driverClass = pro.getProperty("driverClass");
+    ...
+  }
+
+  static{
+    try{
+      readConfig();
+      Class.forName(driverClass);
+      con = DriverManager.getConnection(url,username,password);
+    }catch(Exception ex){
+      throw new RuntimeException(ex+"连接失败");
+    }
+  }
+
+  public static Connection getConnection(){
+    return con
+  }
+}
+==========================================================
+工具类ResourceBundle使用
+  获取ResourceBundle对象
+    static ResourceBundle getBundle ("不带后缀名的文件");
+  通过ResourceBundle 对象获取配置信息
+    String getString(String key):通过键获取值
+
+
+
+==============================================================
+Oracle
+  CallableStatement PrePareCall(String sql) 获取调用存储过程的语句执行者
+
+
+// ==============================================================
+// Connection下的一些了解
+//   setAutoCommit(false) :手动开启事务
+//   commit() :提交事务
+//   rollback() ：事务回滚
+
+
+=================================================================
+连接池：管理数据库的连接
+  目的：使用jdbc的时候，每一次操作都会有获取连接，释放连接的操作，非常耗时，用连接池提高项目性能
+
+  就是在连接池初始化的时候存入一定数量的连接，用的时候通过方法获取连接，不用的时候归还连接
+
+  所有连接池必须实现一个接口 Javax.sql.DateSource
+
+  获取连接 Connection getConnection()
+  归还连接 connection.close(); //也就是以前释放资源的方法
+
+
+  常用的连接池
+  DBCP:
+    使用步骤
+    1.导入jar包(commons-dbcp-1.4.jar  commons-pool-1.5..jar)
+    2.使用API
+      硬编码
+        BasicDataSource bds = new BasicDataSource();//创建连接
+        ds.setDriverClassName("com.mysql.jdbc.DRIVER_CLASS");//配置信息...
+        ds.setUrl("")
+        ...
+
+        Connection conn = ds.getConnection();
+        String sql = "";
+        PreparedStatement st = conn.PreparedStatement(sql);
+        // 设置参数

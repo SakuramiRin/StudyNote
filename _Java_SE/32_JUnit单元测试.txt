@@ -1,0 +1,4 @@
+要求：
+  方法是public void ***(){}
+  方法上添加@Test
+  Ctrl+1 导入Junit 4库

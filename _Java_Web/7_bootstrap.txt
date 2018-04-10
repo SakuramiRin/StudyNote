@@ -1,0 +1,121 @@
+Bootstrap响应式页面
+  Web CSS框架！
+  由动态CSS语言Less而来
+利用我们提供的 Sass 变量和大量 mixin、响应式栅格系统、可扩展的预制组件、基于 jQuery 的强大的插件系统，能够快速为你的想法开发出原型或者构建整个 app
+
+
+bootstrap的三大组成部分
+  全局CSS样式
+  组件：包括字体图标，下拉菜单，导航，警告框，弹出框等
+  JavaScript插件
+====================================================================
+导入
+  导入bootstrap.css
+  导入jquery.js
+  导入bootstrap.js
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">//移动设备优先 viewport视口 device-width设备宽度 initial-scale初始化是否缩放
+    通常情况下，maximum-scale=1.0 与 user-scalable=no 一起使用。这样禁用缩放功能后，用户只能滚动屏幕，就能让您的网站看上去更像原生应用的感觉。
+      <title></title>
+      <link rel="stylesheet" href="css/bootstrap.min.css">
+      <script type="text/javascript" src="js/jquery-1.11.0.js"></script>
+      <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  </head>
+==================================================================
+CSS
+  对响应式图片的设置
+    .img-responsive {
+      display: block; 以块级元素显示
+      height: auto; 跟随最大宽度适配
+      max-width: 100%; 最大宽度
+    }
+  对body的设置
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 默认字体
+      font-size: 14px;  字体大小
+      line-height: 1.428571429; 默认行高
+      color: #333333; 默认文本颜色
+      background-color: #ffffff;  默认背景颜色白色
+    }
+  对链接样式的设置
+    a:hover,
+    a:focus {
+      color: #2a6496; 停留或被点击后颜色被设置
+      text-decoration: underline;
+    }
+    a:focus {
+      outline: thin dotted #333;  被点击后出现虚线轮廓
+      outline: 5px auto -webkit-focus-ring-color; 虚线轮廓的颜色
+      outline-offset: -2px;
+    }
+
+  容器
+    bootstrap需要为页面内容和栅格系统包裹容器.container
+    1：
+    <div class="container"></div>
+    2:
+    <div class="container-fluid"></div>
+  对容器的设置
+    .container {
+      padding-right: 15px;
+      padding-left: 15px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+
+  栅格系统
+    bootstrap将每一行分成12份行，同时必须放置在 .container class 内，以便获得适当的对齐（alignment）和内边距（padding）
+    媒体查询：
+    * 超小屏幕（手机，小于 768px） */
+    /* 没有任何媒体查询相关的代码，因为这在 Bootstrap 中是默认的（还记得 Bootstrap 是移动设备优先的吗？） */
+    .col-xs-数字
+    /* 小屏幕（平板，大于等于 768px） */
+    使用：.col-sm-数字
+    /* 中等屏幕（桌面显示器，大于等于 992px） */
+    使用：.col-md-数字
+    /* 大屏幕（大桌面显示器，大于等于 1200px） */
+    使用：.col-lg-数字
+  基本结构：
+    <div class="container">
+      <div class="row">
+        <div class="col-*-* " ></div>
+        <div class="col-*-*"></div>
+      </div>
+      <div class="row">...</div>
+    </div>
+    <div class="container">....
+    其他：
+    .col-md-push-* 和 .col-md-pull-* 类改变内置网格列的顺序，其中 * 范围是从 1 到 11
+    <div class="row">...</div>  列中可以嵌套列
+    <div class="clearfix visible-xs"></div> 网格显示位置有关？
+    .col-md-offset-3" 大分辨率中使用offset偏移量
+
+
+  排版
+    标题h1-h6 标题标签中，可添加内联子标题标签<small></small>
+    <p>标签中可以添加引导主题副本 class="lead" 更大更粗、行高更高的文本
+    强调标签<small>设置为父文本的85% <strong>粗体文本  <em>斜体
+    缩写 <abbr title="">
+    地址 <address>
+    引用 <blockquote>
+    列表  有序<ol>  无序<ul>  未定义样式<ul class="list-inline"> 内联<ul class="list-unstyled">  定义列表<dl><dt>Description 1</dt><dd>Item 1</dd></dl>  水平的定义列表<dl class="dl-horizontal">
+
+  表格
+    <table>	为表格添加基础样式。
+    <thead>	表格标题行的容器元素（<tr>），用来标识表格列
+    <tbody>	表格主体中的表格行的容器元素（<tr>）
+    <tr>	一组出现在单行上的表格单元格的容器元素（<td> 或 <th>）
+    <td>	默认的表格单元格
+    <th>	特殊的表格单元格，用来标识列或行（取决于范围和位置）必须在 <thead> 内使用
+    <caption>	关于表格存储内容的描述或总结
+
+
+
+==================================================================
+
+==================================================================
+
+==================================================================

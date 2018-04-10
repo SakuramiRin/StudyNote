@@ -1,9 +1,10 @@
 SQL     Structured Query Language
   指结构化查询语言，用于访问和处理数据库的标准的计算机语言
   SQL对大小写不敏感
-  分号的使用可有可无
+  分号的使用可有可无？以分号结尾？
 
-  功能：增删改查
+  功能：增creat删delete改update查read 记住【UCRD】这个缩写！！！！
+  数据库的几种类型：层次型数据库 网状型数据库 关系型数据库(存放实体与实体之间的关系) 非关系型数据库(存放的就是对象)
 
   在web中使用SQL的四个要求
     关系型数据库管理系统(RDBMS)数据库程序（比如 MS Access, SQL Server, MySQL）--->数据存储于table表中；Relational Database Management System
@@ -11,78 +12,85 @@ SQL     Structured Query Language
     SQL
     HTML / CSS
 
+SQL分类
+  DDL 数据定义语言 操作对象：数据库和表 关键词：create alter drop
+  DML 数据操作语言  操作对象：记录 关键词：insert delete update
+  DQL 数据查询语言(非官方) 关键词 select form where
+  DCL 数据控制语言  操作对象：用户 事务 权限
 ============================================================
 语法：
-   DML 部分：
+    DDL 语句: 数据定义语言
+    CREATE DATABASE 库名 character 字符集;
+    ALTER DATABASE  库名; 修改库
+    CREATE TABLE 表名
+    (
+      列名称1 数据类型(最大长度) 约束,
+      列名称2 数据类型 约束,
+      ....
+    );
+    ALTER TABLE 表名 ADD添加/MODIFY修改数据类型/CHANGE修改新旧列名/DROP删除 列名 类型(长度) 约束; 变更表
+    RENAME TABLES 旧表名 TO 新表名;
+    /SHOW TABLES; 查看所有表
+    /DESC 表名; 查看表结构
+    /DROP TABLE 表;  删除表
+
+    CREATE INDEX  创建索引（搜索键）
+    CREATE INDEX 索引名 ON 表 (列)
+    DROP INDEX  删除索引
+
+    ALTER TABLE 表 DROP INDEX 索引名 MySQL
+
+
+   DML 部分：数据操作语言
+    INSERT INTO - 向数据库表中插入数据
+      INSERT INTO 表(列1，列2,...) VALUES (值1, 值2,....),(新一行值1，值2，值3,...)   //增行，可只写表名后不跟列，值全写
+    UPDATE - 更新数据库表中的数据
+      UPDATE 表 SET 列1 = 新值1，列2 = 新值2 WHERE 条件列 = 条件值
+    DELETE - 从数据库表中删除数据
+      DELETE FROM 表 WHERE 列 = 值;  一条一条删除，不清空AUTO_INCREMENT 记录数
+      TRUNCATE TABLE 表; 删除表数据保留表结构重新建表，AUTO_INCREMENT 从0
+
+
+  DQL 部分： 数据查询语言
+      不删除表的情况下删除所有行，表的结构、属性和索引都是完整的
     SELECT - 从数据库表中获取数据 查
       SELECT DISTINCT(去掉重复项) 列(*) FROM 表 WHERE 列 运算符 '值'(条件选取,单引号仅用来环绕文本值) AND/OR(多种条件) 列 运算符 '值' ORDER BY 列1，列2 (排序) DESC/ASC (逆字母，顺字母)
         运算符
           =等于 <>不等于 >大于 <小于 >=大于等于 <=小于等于 BETWEEN 在某个范围内 LIKE 	搜索某种模式
-    UPDATE - 更新数据库表中的数据
-      UPDATE 表 SET 列1 = 新值1，列2 = 新值2 WHERE 条件列 = 条件值
-    DELETE - 从数据库表中删除数据
-      DELETE FROM 表 WHERE 列 = 值
-        不删除表的情况下删除所有行，表的结构、属性和索引都是完整的
-    INSERT INTO - 向数据库表中插入数据
-      INSERT INTO 表(列1，列2,...) VALUES (值1, 值2,....) 插入行
-    ALTER TABLE 添加删除列
-      ALTER TABLE 表 ADD 列 数据类型
-      ALTER TABLE 表 DROP COLUMN 列
 
-   DDL 语句:
-      CREATE DATABASE - 创建新数据库
-        CREATE DATABASE 数据库名
-      ALTER DATABASE - 修改数据库
-      CREATE TABLE - 创建新表
-        CREATE TABLE 表名称
-          (
-          列名称1 数据类型,
-          列名称2 数据类型,
-          ....
-          )
-      ALTER TABLE - 变更（改变）数据库表
-      DROP TABLE - 删除表
-      CREATE INDEX - 创建索引（搜索键）
-        CREATE INDEX 索引名 ON 表 (列)
-      DROP INDEX - 删除索引
-        ALTER TABLE 表 DROP INDEX 索引名 MySQL
-        DROP TABLE 表  删除表
-        TRUNCATE TABLE 表 删除表数据保留表结构
-
-============================================================
-TOP 返回需要的条目(非所有支持)
-  SELECT TOP (数字 或者 百分比 PERCENT) 列(s) FROM 表
-LIKE 对WHERE进一步限定
-  SELECT 列(*) FROM 表 WHERE 列 NOT(不) LIKE '含通配符条件' (条件)
-    % 替代一个或多个字符
-    _ 仅替代一个字符
-    [charlist] 字符列中的任何单一字符
-    [^charlist]或者[!charlist] 不在字符列中的任何单一字符
-IN 对WHERE进一步限定
-  SELECT 列(*) FROM 表 WHERE 列 IN (值,值,...)
-BETWEEN ...AND 对WHERE进一步限定
-  SELECT 列(*) FROM 表 WHERE 列 NOT( ) BETWEEN 值1 AND 值2 对于包不包含值1，值2问题需参考具体RDBMS
+    TOP 返回需要的条目(非所有支持)
+      SELECT TOP (数字 或者 百分比 PERCENT) 列(s) FROM 表
+    LIKE 对WHERE进一步限定
+      SELECT 列(*) FROM 表 WHERE 列 NOT(不) LIKE '含通配符条件' (条件)
+        % 替代一个或多个字符
+        _ 仅替代一个字符
+        [charlist] 字符列中的任何单一字符
+        [^charlist]或者[!charlist] 不在字符列中的任何单一字符
+    IN 对WHERE进一步限定
+      SELECT 列(*) FROM 表 WHERE 列 IN (值,值,...)
+    BETWEEN ...AND 对WHERE进一步限定
+      SELECT 列(*) FROM 表 WHERE 列 NOT( ) BETWEEN 值1 AND 值2 对于包不包含值1，值2问题需参考具体RDBMS
 
 
-Alias 别名
-  SELECT 列(*) FROM 表 AS 表别名
-  SELECT 列 AS 列别名 FROM 表
+    AS 临时给查询内容重命别名
+      SELECT 列(*) FROM 表 AS 表别名
+      SELECT 列 AS 列别名 FROM 表
 
-JOIN
-  INNER JOIN: 如果表中有至少一个匹配，则返回行
-    SELECT 列(*) FROM 表1 INNER JOIN 表2 ON 表1.列=表2.列 产生关系的2列
-  LEFT JOIN: 即使右表中没有匹配，也从左表返回所有的行，即附带表2的匹配项
-    在某些数据库中， LEFT JOIN 称为 LEFT OUTER JOIN
-  RIGHT JOIN: 即使左表中没有匹配，也从右表返回所有的行
-    在某些数据库中， RIGHT JOIN 称为 RIGHT OUTER JOIN
-  FULL JOIN: 只要其中一个表中存在匹配，就返回行
-    在某些数据库中， FULL JOIN 称为 FULL OUTER JOIN
+    JOIN
+      INNER JOIN: 如果表中有至少一个匹配，则返回行
+        SELECT 列(*) FROM 表1 INNER JOIN 表2 ON 表1.列=表2.列 产生关系的2列
+      LEFT JOIN: 即使右表中没有匹配，也从左表返回所有的行，即附带表2的匹配项
+        在某些数据库中， LEFT JOIN 称为 LEFT OUTER JOIN
+      RIGHT JOIN: 即使左表中没有匹配，也从右表返回所有的行
+        在某些数据库中， RIGHT JOIN 称为 RIGHT OUTER JOIN
+      FULL JOIN: 只要其中一个表中存在匹配，就返回行
+        在某些数据库中， FULL JOIN 称为 FULL OUTER JOIN
 
-UNION 合并多表结果
-  SELECT 列(*) FROM 表1 UNION [ALL(即使重复)] SELECT 列(*) FROM 表2
+    UNION 合并多表结果
+      SELECT 列(*) FROM 表1 UNION [ALL(即使重复)] SELECT 列(*) FROM 表2
 
-SELECT INTO 创建表的备份复件
-  SELECT 列(*) INTO 新表 [IN externaldatabase] FROM 旧表
+    SELECT INTO 创建表的备份复件
+      SELECT 列(*) INTO 新表 [IN externaldatabase] FROM 旧表
 
 
 ===========================================================
@@ -129,14 +137,15 @@ SELECT INTO 创建表的备份复件
     ADD CONSTRAINT uc_PersonID UNIQUE (列1，列2) 创表后追加
     DROP INDEX uc_PersonID 撤销MySQL
     DROP CONSTRAINT uc_PersonID 撤销SQL Server / Oracle / MS Access
-  PRIMARY KEY 主键 (非空，唯一) 主键中还可以添加  AUTO_INCREMENT执行自动生成
+  PRIMARY KEY 主键  AUTO_INCREMENT 自增
     PRIMARY KEY (列1) mysql
     列 数据类型 NOT NULL PRIMARY KEY  SQL Server / Oracle / MS Access
     CONSTRAINT pk_PersonID PRIMARY KEY (列1,列2) 多列
     ADD [CONSTRAINT pk_PersonID] PRIMARY KEY (列1,列2) 创表后追加
     DROP PRIMARY KEY 撤销mysql
     DROP CONSTRAINT pk_PersonID 撤销SQL Server / Oracle / MS Access
-  FOREIGN KEY 外键
+  FOREIGN KEY 外键 主表不能删除从表中引用的数据
+
   CHECK 约束数据
   DEFAULT 默认数据
 
@@ -144,6 +153,9 @@ SELECT INTO 创建表的备份复件
 
 ====================================================================
 MySQL的数据
+
+常用数据类型 int double varchar date 四种
+完整数据类型如下
 TEXT 类型
   CHAR(size) 	保存固定长度的字符串（可包含字母、数字以及特殊字符）。在括号中指定字符串的长度。最多 255 个字符。
   VARCHAR(size) 保存可变长度的字符串（可包含字母、数字以及特殊字符）。在括号中指定字符串的最大长度。最多 255 个字符，如果值的长度大于 255，则被转换为 TEXT 类型。
@@ -171,8 +183,8 @@ Number 类型：
 
 Date 类型：
   DATE() 日期。格式：YYYY-MM-DD 注释：支持的范围是从 '1000-01-01' 到 '9999-12-31'
-  DATETIME() *日期和时间的组合。格式：YYYY-MM-DD HH:MM:SS 注释：支持的范围是从 '1000-01-01 00:00:00' 到 '9999-12-31 23:59:59'
-  TIMESTAMP() *时间戳。TIMESTAMP 值使用 Unix 纪元('1970-01-01 00:00:00' UTC) 至今的描述来存储。格式：YYYY-MM-DD HH:MM:SS 注释：支持的范围是从 '1970-01-01 00:00:01' UTC 到 '2038-01-09 03:14:07' UTC
+  【】DATETIME() *日期和时间的组合。格式：YYYY-MM-DD HH:MM:SS 注释：支持的范围是从 '1000-01-01 00:00:00' 到 '9999-12-31 23:59:59'
+  【】TIMESTAMP() *传null时间戳。TIMESTAMP 值使用 Unix 纪元('1970-01-01 00:00:00' UTC) 至今的描述来存储。格式：YYYY-MM-DD HH:MM:SS 注释：支持的范围是从 '1970-01-01  00:00:01' UTC 到 '2038-01-09 03:14:07' UTC
   TIME() 	时间。格式：HH:MM:SS 注释：支持的范围是从 '-838:59:59' 到 '838:59:59'
   YEAR() 2 位或 4 位格式的年。 4 位格式所允许的值：1901 到 2155。2 位格式所允许的值：70 到 69，表示从 1970 到 2069。
 * 即便 DATETIME 和 TIMESTAMP 返回相同的格式，它们的工作方式很不同。在 INSERT 或 UPDATE 查询中，TIMESTAMP 自动把自身设置为当前的日期和时间。TIMESTAMP 也接受不同的格式，比如 YYYYMMDDHHMMSS、YYMMDDHHMMSS、YYYYMMDD 或 YYMMDD。
@@ -199,3 +211,39 @@ SQL函数
   ROUND() 四舍五入
   NOW() 返回当前时间
   FORMAT() 显示日期格式化
+
+
+======================================================================
+HAVING 和 WHERE 区别
+  HAVING 分组后对数据进行过滤，后面可以使用分组函数(统计函数)
+  WHERE 分组前，不可使用
+
+
+
+
+
+
+
+=======================================================================
+多表
+  关系：一对多，多对多，一对一
+  ER图：实体关系图，实体用矩形，属性用椭圆，关系用菱形，关系用m/n
+
+  一对多：
+    主表(一表)-从表(多表)，多表添加字段，字段名称建议 主表名称_id 字段类型同主表主键的类型保持一致，称之为外键
+    为了保证数据的有效性与完整性，添加外键约束，在多表的一方添加外键约束
+    格式：
+      ALTER TABLE 多表名称 ADD FOREIGN KEY(外键列) REFERENCES 一表名称(主键列);
+
+  多对多：
+    多对多中，一般引入一张中间表，在中间表中存放两张表的主键，一般还会将这两个主键设置成中间表的联合主键，本质是将多对多拆分成两个一对多
+
+
+  多表查询
+    内连接
+      显示内连接： SELECT 表1(列1，列2，...),表2(列1，列2，...) FROM [inner] join 主表 ON 主从表连接条件
+      隐式内连接： SELECT 表1(列1，列2，...),表2(列1，列2，...) FROM 主表,从表 WHERE 主从连接条件
+    外连接
+      左外连接：SELECT 表1(列1，列2，...),表2(列1，列2，...) FROM 左表  LEFT [OUTER] JOIN 外表 ON  主从连接条件
+      右外连接：左外连接：SELECT 表1(列1，列2，...),表2(列1，列2，...) FROM 右表  LEFT [OUTER] JOIN 外表 ON  主从连接条件
+    子查询：一个查询依赖于另一个查询
